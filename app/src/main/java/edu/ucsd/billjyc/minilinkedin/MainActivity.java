@@ -1,22 +1,27 @@
 package edu.ucsd.billjyc.minilinkedin;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucsd.billjyc.minilinkedin.model.BasicInfo;
 import edu.ucsd.billjyc.minilinkedin.model.Education;
+import edu.ucsd.billjyc.minilinkedin.model.Experience;
+import edu.ucsd.billjyc.minilinkedin.model.Project;
 import edu.ucsd.billjyc.minilinkedin.util.DateUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     private BasicInfo basicInfo;
-    private Education education;
+    private List<Education> educations;
+    private List<Experience> experiences;
+    private List<Project> projects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         basicInfo.name = "Jing Guo";
         basicInfo.email = "guojing@jiuzhang.com";
 
-        education = new Education();
+        Education education = new Education();
         education.school = "UCSD";
         education.major = "Computer Science";
         education.startDate = DateUtils.stringToDate("09/2015");
@@ -40,26 +45,110 @@ public class MainActivity extends AppCompatActivity {
         education.courses.add("Database");
         education.courses.add("Algorithms");
         education.courses.add("Networks");
+
+        Education education2 = new Education();
+        education2.school = "Nanjing University";
+        education2.major = "Software Engineering";
+        education2.startDate = DateUtils.stringToDate("09/2011");
+        education2.endDate = DateUtils.stringToDate("06/2015");
+        education2.courses = new ArrayList<>();
+        education2.courses.add("Database");
+        education2.courses.add("Algorithms");
+        education2.courses.add("Networks");
+
+        educations = new ArrayList<>();
+        educations.add(education);
+        educations.add(education2);
+
+        Experience experience1 = new Experience();
+        experience1.title = "Social Recycle";
+        experience1.company = "LinkedIn";
+        experience1.startDate = DateUtils.stringToDate("09/2016");
+        experience1.endDate = DateUtils.stringToDate("06/2018");
+        experience1.details = new ArrayList<>();
+        experience1.details.add("ruby on rails");
+        experience1.details.add("networks");
+
+        experiences = new ArrayList<>();
+        experiences.add(experience1);
+
+        Project project1 = new Project();
+        project1.name = "Social Recycle";
+        project1.startDate = DateUtils.stringToDate("09/2015");
+        project1.endDate = DateUtils.stringToDate("11/2015");
+        project1.details = new ArrayList<>();
+        project1.details.add("Ruby on rails");
+        project1.details.add("sqllite");
+
+        projects = new ArrayList<>();
+        projects.add(project1);
+
     }
 
     private void setUpUI() {
         setContentView(R.layout.activity_main);
 
-        setUpBasicInfoUI();
-        setUpEducationUI();
+        setUpBasicInfo();
+        setUpEducations();
+        setUpExperiences();
+        setUpProjects();
     }
 
-    private void setUpBasicInfoUI() {
+
+
+    private void setUpBasicInfo() {
         ((TextView)findViewById(R.id.name)).setText(basicInfo.name);
         ((TextView)findViewById(R.id.email)).setText(basicInfo.email);
     }
 
-    private void setUpEducationUI() {
-        ((TextView)findViewById(R.id.education_school)).setText(
-                education.school + "(" + DateUtils.dateToString(education.startDate) + " ~ " +
-                        DateUtils.dateToString(education.endDate)
-        );
-        ((TextView)findViewById(R.id.education_courses)).setText(formatItems(education.courses));
+    private void setUpEducations() {
+        LinearLayout educationsLayout = (LinearLayout)findViewById(R.id.educations);
+        for(Education education : educations) {
+            educationsLayout.addView(getEducationView(education));
+        }
+    }
+
+    private View getEducationView(@NonNull Education education) {
+        View view = getLayoutInflater().inflate(R.layout.education_item, null);
+        String dateString = DateUtils.dateToString(education.startDate) + " ~ " + DateUtils.dateToString(education.endDate);
+
+        ((TextView)view.findViewById(R.id.education_school)).setText(education.school + "(" + dateString + ")");
+        ((TextView)view.findViewById(R.id.education_courses)).setText(formatItems(education.courses));
+        return view;
+    }
+
+    private void setUpExperiences() {
+        LinearLayout experiencesLayout = (LinearLayout)findViewById(R.id.experiences);
+        for(Experience experience : experiences) {
+            experiencesLayout.addView(getExperienceView(experience));
+        }
+    }
+
+    private View getExperienceView(Experience experience) {
+        View view = getLayoutInflater().inflate(R.layout.experience_item, null);
+        String dateString = DateUtils.dateToString(experience.startDate) + " ~ " + DateUtils.dateToString(experience.endDate);
+
+        ((TextView)view.findViewById(R.id.experience_company)).setText(experience.company + "(" + dateString + ")");
+        ((TextView)view.findViewById(R.id.experience_details)).setText(formatItems(experience.details));
+
+        return view;
+    }
+
+    private void setUpProjects() {
+        LinearLayout projectsLayout = (LinearLayout)findViewById(R.id.projects);
+        for(Project project : projects) {
+            projectsLayout.addView(getProjectView(project));
+        }
+    }
+
+    private View getProjectView(Project project) {
+        View view = getLayoutInflater().inflate(R.layout.project_item, null);
+        String dateString = DateUtils.dateToString(project.startDate) + " ~ " + DateUtils.dateToString(project.endDate);
+
+        ((TextView)view.findViewById(R.id.project_name)).setText(project.name + "(" + dateString + ")");
+        ((TextView)view.findViewById(R.id.project_details)).setText(formatItems(project.details));
+
+        return view;
     }
 
     public static String formatItems(List<String> items) {

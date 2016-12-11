@@ -8,20 +8,20 @@ import java.util.UUID;
  * Created by billjyc on 2016/12/10.
  */
 
-public class Education {
+public class Project {
     public String id;
 
-    public String school;
-
-    public String major;
+    public String name;
 
     public Date startDate;
 
     public Date endDate;
 
-    public List<String> courses;
+    public List<String> details;
 
-    public Education() {
+    public Project() {
         id = UUID.randomUUID().toString();
     }
+
 }
+

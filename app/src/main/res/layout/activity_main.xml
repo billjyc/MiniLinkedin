@@ -39,6 +39,7 @@
                     android:layout_marginLeft="8dp"
                     android:src="@drawable/ic_mode_edit_black_18dp"
                     android:background="?attr/selectableItemBackground"
+                    android:alpha="0.7"
                     android:contentDescription="Edit basic info"/>
             </LinearLayout>
 
@@ -83,36 +84,81 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_add_black_18dp"
                 android:background="?attr/selectableItemBackground"
+                android:alpha="0.7"
                 android:contentDescription="Add education"/>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/educations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginBottom="12dp">
 
             <TextView
-                android:id="@+id/education_school"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="UCSD (2015 ~ 2017)"/>
+                android:textSize="@dimen/caption_text_size"
+                android:textAllCaps="true"
+                android:text="@string/section_experience"/>
 
             <ImageButton
-                android:id="@+id/edit_education_btn"
-                android:layout_width="@dimen/icon_button_size"
-                android:layout_height="@dimen/icon_button_size"
-                android:src="@drawable/ic_mode_edit_black_18dp"
+                android:id="@+id/add_experience_btn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_add_black_18dp"
                 android:background="?attr/selectableItemBackground"
-                android:contentDescription="Edit Education"/>
+                android:alpha="0.7"
+                android:contentDescription="Add Experience"/>
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/education_courses"
+        <LinearLayout
+            android:id="@+id/experiences"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="- Database\n- Algorithm\n- Network"/>
+            android:orientation="vertical"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/caption_text_size"
+                android:textAllCaps="true"
+                android:text="@string/section_projects"/>
+
+            <ImageButton
+                android:id="@+id/add_project_btn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_add_black_18dp"
+                android:background="?attr/selectableItemBackground"
+                android:alpha="0.7"
+                android:contentDescription="Add Project"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/projects"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
     </LinearLayout>
 </ScrollView>
