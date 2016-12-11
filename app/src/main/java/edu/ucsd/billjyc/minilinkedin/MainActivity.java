@@ -1,9 +1,12 @@
 package edu.ucsd.billjyc.minilinkedin;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +20,8 @@ import edu.ucsd.billjyc.minilinkedin.model.Project;
 import edu.ucsd.billjyc.minilinkedin.util.DateUtils;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int REQ_CODE_EDUCATION_EDIT = 100;
 
     private BasicInfo basicInfo;
     private List<Education> educations;
@@ -103,22 +108,54 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpEducations() {
         LinearLayout educationsLayout = (LinearLayout)findViewById(R.id.educations);
+        ImageButton addEducationBtn = (ImageButton)findViewById(R.id.add_education_btn);
+        addEducationBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, EducationEditActivity.class);
+                startActivityForResult(intent, REQ_CODE_EDUCATION_EDIT);
+            }
+        });
+
+        educationsLayout.removeAllViews();
         for(Education education : educations) {
             educationsLayout.addView(getEducationView(education));
         }
     }
 
-    private View getEducationView(@NonNull Education education) {
+    private View getEducationView(@NonNull final Education education) {
         View view = getLayoutInflater().inflate(R.layout.education_item, null);
         String dateString = DateUtils.dateToString(education.startDate) + " ~ " + DateUtils.dateToString(education.endDate);
 
         ((TextView)view.findViewById(R.id.education_school)).setText(education.school + "(" + dateString + ")");
         ((TextView)view.findViewById(R.id.education_courses)).setText(formatItems(education.courses));
+
+        ImageButton editEducationBtn = (ImageButton)view.findViewById(R.id.edit_education_btn);
+        editEducationBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, EducationEditActivity.class);
+                intent.putExtra(EducationEditActivity.KEY_EDUCATION, education);
+                startActivityForResult(intent, REQ_CODE_EDUCATION_EDIT);
+            }
+        });
         return view;
     }
 
     private void setUpExperiences() {
         LinearLayout experiencesLayout = (LinearLayout)findViewById(R.id.experiences);
+        ImageButton addExperienceBtn = (ImageButton)findViewById(R.id.add_experience_btn);
+        addExperienceBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ExperienceEditActivity.class);
+                startActivity(intent);
+            }
+        });
+
         for(Experience experience : experiences) {
             experiencesLayout.addView(getExperienceView(experience));
         }
@@ -131,11 +168,30 @@ public class MainActivity extends AppCompatActivity {
         ((TextView)view.findViewById(R.id.experience_company)).setText(experience.company + "(" + dateString + ")");
         ((TextView)view.findViewById(R.id.experience_details)).setText(formatItems(experience.details));
 
+        ImageButton editExperienceBtn = (ImageButton)view.findViewById(R.id.edit_education_btn);
+//        editExperienceBtn.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+
         return view;
     }
 
     private void setUpProjects() {
         LinearLayout projectsLayout = (LinearLayout)findViewById(R.id.projects);
+        ImageButton addProjectBtn = (ImageButton)findViewById(R.id.add_project_btn);
+        addProjectBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProjectEditActivity.class);
+                startActivity(intent);
+            }
+        });
+
         for(Project project : projects) {
             projectsLayout.addView(getProjectView(project));
         }
@@ -147,6 +203,15 @@ public class MainActivity extends AppCompatActivity {
 
         ((TextView)view.findViewById(R.id.project_name)).setText(project.name + "(" + dateString + ")");
         ((TextView)view.findViewById(R.id.project_details)).setText(formatItems(project.details));
+
+        ImageButton editProjectBtn = (ImageButton)view.findViewById(R.id.edit_education_btn);
+//        editProjectBtn.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
 
         return view;
     }
@@ -160,5 +225,21 @@ public class MainActivity extends AppCompatActivity {
             sb.deleteCharAt(sb.length() - 1);
         }
         return sb.toString();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQ_CODE_EDUCATION_EDIT:
+                    Education education = data.getParcelableExtra(EducationEditActivity.KEY_EDUCATION);
+                    educations.add(education);
+                    setUpEducations();
+            }
+        }
+
+
     }
 }
