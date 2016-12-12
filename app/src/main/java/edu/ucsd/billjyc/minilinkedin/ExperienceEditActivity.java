@@ -14,6 +14,7 @@ import edu.ucsd.billjyc.minilinkedin.util.DateUtils;
 
 public class ExperienceEditActivity extends EditBaseActivity<Experience> {
     public static final String KEY_EXPERIENCE = "experience";
+    public static final String KEY_EXPERIENCE_ID = "experience_id";
 
 
     @Override
@@ -43,7 +44,7 @@ public class ExperienceEditActivity extends EditBaseActivity<Experience> {
     }
 
     @Override
-    protected void setUpForEdit(@NonNull Experience data) {
+    protected void setUpForEdit(@NonNull final Experience data) {
         ((EditText)findViewById(R.id.experience_edit_title)).setText(data.title);
         ((EditText)findViewById(R.id.experience_edit_company)).setText(data.company);
         ((EditText)findViewById(R.id.experience_edit_start_date))
@@ -51,6 +52,17 @@ public class ExperienceEditActivity extends EditBaseActivity<Experience> {
         ((EditText)findViewById(R.id.experience_edit_end_date))
                 .setText(DateUtils.dateToString(data.endDate));
         ((EditText)findViewById(R.id.experience_edit_details)).setText(TextUtils.join("\n", data.details));
+
+        findViewById(R.id.experience_edit_delete).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(KEY_EXPERIENCE_ID, data.id);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
+            }
+        });
     }
 
     @Override

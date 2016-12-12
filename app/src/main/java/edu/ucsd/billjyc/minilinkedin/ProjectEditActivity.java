@@ -19,6 +19,7 @@ import edu.ucsd.billjyc.minilinkedin.util.DateUtils;
 
 public class ProjectEditActivity extends EditBaseActivity<Project> {
     public static final String KEY_PROJECT = "project";
+    public static final String KEY_PROJECT_ID = "project_id";
 
     @Override
     protected void saveAndExit(@NonNull Project data) {
@@ -45,7 +46,7 @@ public class ProjectEditActivity extends EditBaseActivity<Project> {
     }
 
     @Override
-    protected void setUpForEdit(@NonNull Project data) {
+    protected void setUpForEdit(@NonNull final Project data) {
         ((EditText)findViewById(R.id.project_edit_title)).setText(data.name);
         ((EditText)findViewById(R.id.project_edit_start_date))
                 .setText(DateUtils.dateToString(data.startDate));
@@ -53,6 +54,16 @@ public class ProjectEditActivity extends EditBaseActivity<Project> {
                 .setText(DateUtils.dateToString(data.endDate));
         ((EditText)findViewById(R.id.project_edit_details))
                 .setText(TextUtils.join("\n", data.details));
+
+        findViewById(R.id.project_edit_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(KEY_PROJECT_ID, data.id);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
+            }
+        });
     }
 
     @Override

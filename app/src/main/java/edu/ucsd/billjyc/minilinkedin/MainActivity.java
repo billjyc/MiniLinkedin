@@ -273,18 +273,33 @@ public class MainActivity extends AppCompatActivity {
         if(resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQ_CODE_EDUCATION_EDIT:
-                    Education education = data.getParcelableExtra(EducationEditActivity.KEY_EDUCATION);
-                    Log.d("receive data", "receive education");
-                    updateEducation(education);
-                    setUpEducations();
+                    String educationId = data.getStringExtra(EducationEditActivity.KEY_EDUCATION_ID);
+                    if(educationId != null) {
+                        deleteEducation(educationId);
+                    } else {
+                        Education education = data.getParcelableExtra(EducationEditActivity.KEY_EDUCATION);
+                        Log.d("receive data", "receive education");
+                        updateEducation(education);
+                        setUpEducations();
+                    }
                     break;
                 case REQ_CODE_EXPERIENCE_EDIT:
-                    Experience experience = data.getParcelableExtra(ExperienceEditActivity.KEY_EXPERIENCE);
-                    updateExperience(experience);
+                    String experienceId = data.getStringExtra(ExperienceEditActivity.KEY_EXPERIENCE_ID);
+                    if(experienceId != null) {
+                        deleteExperience(experienceId);
+                    } else {
+                        Experience experience = data.getParcelableExtra(ExperienceEditActivity.KEY_EXPERIENCE);
+                        updateExperience(experience);
+                    }
                     break;
                 case REQ_CODE_PROJECT_EDIT:
-                    Project project = data.getParcelableExtra(ProjectEditActivity.KEY_PROJECT);
-                    updateProject(project);
+                    String projectId = data.getStringExtra(ProjectEditActivity.KEY_PROJECT_ID);
+                    if(projectId != null) {
+                        deleteProject(projectId);
+                    } else {
+                        Project project = data.getParcelableExtra(ProjectEditActivity.KEY_PROJECT);
+                        updateProject(project);
+                    }
                     break;
                 case REQ_CODE_BASIC_INFO_EDIT:
                     BasicInfo basicInfo = data.getParcelableExtra(BasicInfoEditActivity.KEY_BASIC_INFO);
@@ -294,6 +309,42 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void deleteProject(String projectId) {
+        for (int i = 0; i < projects.size(); ++i) {
+            Project p = projects.get(i);
+            if (TextUtils.equals(p.id, projectId)) {
+                projects.remove(i);
+                break;
+            }
+        }
+
+        setUpProjects();
+    }
+
+    private void deleteExperience(String experienceId) {
+        for (int i = 0; i < experiences.size(); ++i) {
+            Experience e = experiences.get(i);
+            if (TextUtils.equals(e.id, experienceId)) {
+                experiences.remove(i);
+                break;
+            }
+        }
+
+        setUpExperiences();
+    }
+
+    private void deleteEducation(String educationId) {
+        for (int i = 0; i < educations.size(); ++i) {
+            Education e = educations.get(i);
+            if (TextUtils.equals(e.id, educationId)) {
+                educations.remove(i);
+                break;
+            }
+        }
+
+        setUpEducations();
     }
 
     private void updateBasicInfo(BasicInfo basicInfo) {
