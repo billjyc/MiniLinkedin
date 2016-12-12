@@ -1,34 +1,65 @@
 package edu.ucsd.billjyc.minilinkedin;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.app.Activity;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.EditText;
 
-public class ExperienceEditActivity extends AppCompatActivity {
+import java.util.Arrays;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d("startActivity", "start experience edit activity");
-        setContentView(R.layout.activity_experience_edit);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
+import edu.ucsd.billjyc.minilinkedin.model.Experience;
+import edu.ucsd.billjyc.minilinkedin.util.DateUtils;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_edit, menu);
-        return true;
-    }
+public class ExperienceEditActivity extends EditBaseActivity<Experience> {
+    public static final String KEY_EXPERIENCE = "experience";
+
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
+    protected void saveAndExit(@NonNull Experience data) {
+        if(data == null) {
+            data = new Experience();
         }
-        return super.onOptionsItemSelected(item);
+
+        data.company = ((EditText) findViewById(R.id.experience_edit_company)).getText().toString();
+        data.title = ((EditText) findViewById(R.id.experience_edit_title)).getText().toString();
+        data.startDate = DateUtils.stringToDate(
+                ((EditText) findViewById(R.id.experience_edit_start_date)).getText().toString());
+        data.endDate = DateUtils.stringToDate(
+                ((EditText) findViewById(R.id.experience_edit_end_date)).getText().toString());
+        data.details = Arrays.asList(TextUtils.split(
+                ((EditText) findViewById(R.id.experience_edit_details)).getText().toString(), "\n"));
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(KEY_EXPERIENCE, data);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
+    }
+
+    @Override
+    protected void setUpForCreate() {
+        findViewById(R.id.experience_edit_delete).setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void setUpForEdit(@NonNull Experience data) {
+        ((EditText)findViewById(R.id.experience_edit_title)).setText(data.title);
+        ((EditText)findViewById(R.id.experience_edit_company)).setText(data.company);
+        ((EditText)findViewById(R.id.experience_edit_start_date))
+                .setText(DateUtils.dateToString(data.startDate));
+        ((EditText)findViewById(R.id.experience_edit_end_date))
+                .setText(DateUtils.dateToString(data.endDate));
+        ((EditText)findViewById(R.id.experience_edit_details)).setText(TextUtils.join("\n", data.details));
+    }
+
+    @Override
+    protected Experience initializeData() {
+        return getIntent().getParcelableExtra(KEY_EXPERIENCE);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_experience_edit;
     }
 }

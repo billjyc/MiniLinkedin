@@ -32,6 +32,8 @@ public class Experience implements Parcelable{
         id = in.readString();
         company = in.readString();
         title = in.readString();
+        startDate = new Date(in.readLong());
+        endDate = new Date(in.readLong());
         details = in.createStringArrayList();
     }
 
@@ -57,6 +59,8 @@ public class Experience implements Parcelable{
         dest.writeString(id);
         dest.writeString(company);
         dest.writeString(title);
+        dest.writeLong(startDate.getTime());
+        dest.writeLong(endDate.getTime());
         dest.writeStringList(details);
     }
 }
