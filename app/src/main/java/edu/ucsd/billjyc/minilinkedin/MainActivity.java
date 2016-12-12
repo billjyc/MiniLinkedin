@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import edu.ucsd.billjyc.minilinkedin.model.Experience;
 import edu.ucsd.billjyc.minilinkedin.model.Project;
 import edu.ucsd.billjyc.minilinkedin.util.DateUtils;
 import edu.ucsd.billjyc.minilinkedin.util.ImageUtils;
+import edu.ucsd.billjyc.minilinkedin.util.ModelUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQ_CODE_EXPERIENCE_EDIT = 101;
     private static final int REQ_CODE_PROJECT_EDIT = 102;
     private static final int REQ_CODE_BASIC_INFO_EDIT = 103;
+
+    private static final String MODEL_EDUCATIONS = "educations";
+    private static final String MODEL_EXPERIENCES = "experiences";
+    private static final String MODEL_PROJECTS = "projects";
+    private static final String MODEL_BASIC_INFO = "basic_info";
 
     private BasicInfo basicInfo;
     private List<Education> educations;
@@ -39,8 +47,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fakeData();
+        //fakeData();
+        loadData();
         setUpUI();
+    }
+
+    private void loadData() {
+        BasicInfo savedBasicInfo = ModelUtils.read(this, MODEL_BASIC_INFO, new TypeToken<BasicInfo>(){});
+        basicInfo = savedBasicInfo == null ? new BasicInfo() : savedBasicInfo;
+
+        List<Education> savedEducation = ModelUtils.read(this, MODEL_EDUCATIONS, new TypeToken<List<Education>>(){});
+        educations = savedEducation == null ? new ArrayList<Education>() : savedEducation;
+
+        List<Experience> savedExperience = ModelUtils.read(this,
+                MODEL_EXPERIENCES,
+                new TypeToken<List<Experience>>(){});
+        experiences = savedExperience == null ? new ArrayList<Experience>() : savedExperience;
+        List<Project> savedProjects = ModelUtils.read(this,
+                MODEL_PROJECTS,
+                new TypeToken<List<Project>>(){});
+        projects = savedProjects == null ? new ArrayList<Project>() : savedProjects;
     }
 
     private void fakeData() {
@@ -320,6 +346,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        ModelUtils.save(this, MODEL_PROJECTS, projects);
         setUpProjects();
     }
 
@@ -331,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-
+        ModelUtils.save(this, MODEL_EXPERIENCES, experiences);
         setUpExperiences();
     }
 
@@ -343,11 +370,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-
+        ModelUtils.save(this, MODEL_EDUCATIONS, educations);
         setUpEducations();
     }
 
     private void updateBasicInfo(BasicInfo basicInfo) {
+        ModelUtils.save(this, MODEL_BASIC_INFO, basicInfo);
+
         this.basicInfo = basicInfo;
         setUpBasicInfo();
     }
@@ -365,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
         if(!found) {
             projects.add(project);
         }
+        ModelUtils.save(this, MODEL_PROJECTS, projects);
         setUpProjects();
     }
 
@@ -381,6 +411,7 @@ public class MainActivity extends AppCompatActivity {
         if(!found) {
             experiences.add(experience);
         }
+        ModelUtils.save(this, MODEL_EXPERIENCES, experiences);
         setUpExperiences();
     }
 
@@ -398,6 +429,7 @@ public class MainActivity extends AppCompatActivity {
         if(!found) {
             educations.add(education);
         }
+        ModelUtils.save(this, MODEL_EDUCATIONS, educations);
         setUpEducations();
     }
 }
